@@ -4,6 +4,7 @@ import { logger } from "./utils/logger.js";
 import { closeDatabase, connectToDatabase } from "./db/sequuelize.js";
 import { initModels } from "./models/index.js";
 import { createApp } from "./app.js";
+import { closePublisher, initPublisher } from "./messaging/event-publishing.js";
 
 
 const main = async () => {
@@ -11,6 +12,8 @@ const main = async () => {
 
     await connectToDatabase();
     await initModels();
+
+    await initPublisher();
 
     const app = createApp();
     const server = createServer(app);
@@ -23,7 +26,7 @@ const main = async () => {
 
     const shutdown = () => {
 
-      Promise.all([closeDatabase()])
+      Promise.all([closeDatabase(),closePublisher()])
         .catch((error: unknown) => {
           logger.info("shutting down auth service...");
 

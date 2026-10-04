@@ -3,6 +3,8 @@ import cors from "cors";
 import helmet from "helmet";
 import { errorHandler } from "./middleware/error-handler.js";
 import { registerRoutes } from "./routes/index.js";
+import { createInternalAuthMiddleware } from '@chatapp/common';
+import { env } from "./config/env.js";
 
 export const createApp = (): Application => {
   const app = express();
@@ -17,6 +19,11 @@ export const createApp = (): Application => {
 
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
+  app.use(
+     createInternalAuthMiddleware(env.INTERNAL_API_TOKEN, {
+       exemptPaths: ['/health'],
+     }),
+   );
 
   registerRoutes(app);
 

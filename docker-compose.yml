@@ -56,7 +56,7 @@ services:
       retries: 5
       start_period: 30s
   user-db:
-    image: postgres:16
+    image: postgres:18
     container_name: chatapp-user-db
     environment:
       POSTGRES_DB: ${USER_DB_NAME:-chatapp_user_service}
@@ -65,7 +65,7 @@ services:
     ports:
       - '${USER_DB_PORT:-5432}:5432'
     volumes:
-      - user-db-data:/var/lib/postgresql/data
+      - user-db-data:/var/lib/postgresql
     networks:
       - chatapp-network
     healthcheck:
