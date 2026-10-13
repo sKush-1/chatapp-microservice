@@ -1,6 +1,6 @@
 import type { Router } from 'express';
 import { authRouter } from '@/routes/auth.routes.js';
-// import { userRouter } from '@/routes/user.routes';
+import { userRouter } from '@/routes/user.routes.js';
 // import { conversationRouter } from './conversation.routes';
 
 export const registerRoutes = (app: Router) => {
@@ -11,5 +11,5 @@ export const registerRoutes = (app: Router) => {
 
   app.use('/auth', authRouter);
   // app.use('/conversations', conversationRouter);
-  // app.use('/users', userRouter);
+  app.use('/users', userRouter);
 };

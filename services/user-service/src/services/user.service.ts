@@ -3,6 +3,7 @@ import type { CreateUserInput, User } from '@/types/user.js';
 import { AuthUserRegisteredPayload, HttpError } from '@chatapp/common';
 import { UniqueConstraintError } from 'sequelize';
 import { UserRepository, userRepository } from '@/repositories/user.repositories.js';
+import { publishUserCreatedEvent } from '@/messaging/event-publisher.js';
 
 class UserService {
   constructor(private readonly repository: UserRepository) {}
@@ -23,13 +24,13 @@ class UserService {
     try {
       const user = await this.repository.create(input);
 
-      // void publishUserCreatedEvent({
-      //   id: user.id,
-      //   email: user.email,
-      //   displayName: user.displayName,
-      //   createdAt: user.createdAt.toISOString(),
-      //   updatedAt: user.updatedAt.toISOString(),
-      // });
+      void publishUserCreatedEvent({
+        id: user.id,
+        email: user.email,
+        displayName: user.displayName,
+        createdAt: user.createdAt.toISOString(),
+        updatedAt: user.updatedAt.toISOString(),
+      });
 
       return user;
     } catch (error) {
@@ -59,13 +60,13 @@ class UserService {
   async syncFromAuthUser(payload: AuthUserRegisteredPayload): Promise<User> {
     const user = await this.repository.upsertFromAuthEvent(payload);
 
-    // void publishUserCreatedEvent({
-    //   id: user.id,
-    //   email: user.email,
-    //   displayName: user.displayName,
-    //   createdAt: user.createdAt.toISOString(),
-    //   updatedAt: user.updatedAt.toISOString(),
-    // });
+    void publishUserCreatedEvent({
+      id: user.id,
+      email: user.email,
+      displayName: user.displayName,
+      createdAt: user.createdAt.toISOString(),
+      updatedAt: user.updatedAt.toISOString(),
+    });
     return user;
   }
 }
